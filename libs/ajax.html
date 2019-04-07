@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>iview example</title>
+    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+    <style type="text/css">
+        #app{
+            width: 1200px;
+            margin: 50px auto;
+        }
+        .td_table{
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <i-button type="primary" @click="exportData"><Icon type="ios-download-outline"></Icon>导出团贷数据</i-button>
+    <i-table class="td_table" :loading="loaded" :columns="columns" :data="datas" ref="table"></i-table>
+
+    <Page :current="1" :total="total" simple @on-change="load"></Page>
+</div>
+ <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+<script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+Date.prototype.format = function(format) {
+    var o = {
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "h+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),
+        "S": this.getMilliseconds()
+    }
+    if (/(y+)/.test(format)) {
+        format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (var k in o) {
+        if (new RegExp("(" + k + ")").test(format)) {
+            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+        }
+    }
+    return format;
+}
+
+new Vue({
+    el: '#app',
+    data: {
+        loaded: false,
+        dataAll: [],
+        datas: [],
+        total: 0,
+        curpage: 0,
+        columns: [
+            {
+                title: '序号',
+                key: 'index',
+            },
+            // {
+            //     title: 'ID',
+            //     key: '_id',
+            // },
+            {
+                title: '姓名',
+                key: 'name',
+            },
+            {
+                title: '性别',
+                key: 'sex',
+            },
+            {
+                title: '身份证号码',
+                key: 'idcard',
+            },
+            {
+                title: '地址',
+                key: 'address',
+            },
+            // {
+            //     title: '城市',
+            //     key: 'area',
+            // },
+            // {
+            //     title: '区',
+            //     key: 'area1',
+            // },
+            // {
+            //     title: '地址',
+            //     key: 'area2',
+            // },
+            {
+                title: '电话号码',
+                key: 'tel',
+            },
+            {
+                title: '微信号',
+                key: 'wx',
+            },
+            {
+                title: '代收余额',
+                key: 'money',
+            },
+            // {
+            //     title: '技能',
+            //     key: 'has',
+            // },
+            // {
+            //     title: '是否能到现场',
+            //     key: 'yes',
+            // },
+            {
+                title: '记录时间',
+                key: 'createdAt',
+            },
+        ],
+    },
+    created() {
+        this.load()
+        this.getTotal()
+    },
+    methods: {
+        getTotal() {
+            axios.get('http://koa2.bigqianduan.top/register/get')
+            .then(res => {
+                if (res.data.code == 200) {
+                    this.total = res.data.data.length
+                    res.data.data.forEach((v, i) => {
+                        v.index = (i + 1)
+                        v.createdAt = new Date(v.createdAt).format('yyyy-M-d h:m')
+                        v.address = v.area + v.area1 + v.area2
+                    })
+                    this.dataAll = res.data.data
+                } else {
+                    this.$Message.error(res.data.msg)
+                }
+            })
+        },
+        load(op) {
+            this.loaded = true
+
+            if (op) {
+                this.curpage = op - 1
+            }
+
+            axios.get('http://koa2.bigqianduan.top/register/get', {
+                params: {
+                    page: this.curpage
+                }
+            })
+            .then(res => {
+                if (res.data.code == 200) {
+                    res.data.data.forEach((v, i) => {
+                        v.index = (i + 1) + this.curpage * 10
+                        v.createdAt = new Date(v.createdAt).format('yyyy-M-d h:m')
+                        v.address = v.area + v.area1 + v.area2
+                    })
+                    this.datas = res.data.data
+                } else {
+                    this.$Message.error(res.data.msg)
+                }
+                this.loaded = false
+            })
+            .catch(err => {
+                this.$Message.error(err)
+                this.loaded = false
+            })
+        },
+        exportData (type) {
+            this.$refs.table.exportCsv({
+                filename: '团贷数据',
+                columns: this.columns,
+                data: this.dataAll
+            });
+        }      
+    }
+})
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
