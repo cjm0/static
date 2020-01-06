@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>装饰大抽奖</title>
+<meta name="keyworlds" content="">
+<meta name="description" content="">
+<link rel="stylesheet" href="./gold/css/reset.css">
+<style>
+  html,body{
+    width: 100%;
+    height: 100%;
+  }
+  .bg {
+    width: 100%;
+    height: 100%;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
+  .cont{
+    display: none;
+    position: relative;
+    height: 100%;
+  }
+  .box{
+    width: 24vw;
+    height: 34vw;
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    transform: translate(-50%, -50%);
+  }
+  .out{
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .img-wrap{
+    width: 100%;
+    height: 100%;
+  }
+  .img{
+    width: 100%;
+    height: 100%;
+  }
+  .name{
+    position: absolute;
+    left: 0;
+    bottom: -50px;
+    width: 100%;
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+  }
+  .btn {
+    position: absolute;
+    right: -240px;
+    top: 50%;
+    color: red;
+    font-size: 36px;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+<div class="bg">
+  <div class="cont">
+    <div class="box">
+      <div class="out">
+        <p class="img-wrap">
+          <img src="" alt="" class="img">
+        </p>
+        <p class="name">xxx</p>
+        <div class="btn">开始</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let cont = document.querySelector('.cont')
+  let img = document.querySelector('.img')
+  let name = document.querySelector('.name')
+  let btn = document.querySelector('.btn')
+  let speed = 30
+
+
+  // 背景变换
+  let step = 0
+  let bg = ['30', '31', '20', '21', '10', '11']
+  function go() {
+    if (step > 5) {
+      return
+    }
+    document.querySelector('.bg').style.backgroundImage = 'url(./gold/img/bg/' + bg[step] + '.jpg)'
+    step++
+    if (step % 2 == 0) {
+      cont.style.display = 'block'
+      btn.innerHTML = '开始'
+    } else {
+      cont.style.display = 'none'
+    }
+  }
+
+  window.onload = function() {
+    go()
+  }
+  document.body.onclick = function() {
+    go()
+  }
+
+
+  // 抽奖
+  let tag = true
+  let time = null
+  let arr = [
+    '丁欣',
+    '代叶',
+    '侯玉珊',
+    '冯振华',
+    '周丹兰',
+    '唐伯虎',
+    '大老师',
+    '岩姐',
+    '廖波涛',
+    '张建军',
+    '张开',
+    '张惺钰',
+    '张明（大）',
+    '张明（小）',
+    '张暾',
+    '张红红',
+    '张阳',
+    '徐伟',
+    '曹鹏',
+    '曹鹏飞',
+    '李丹',
+    '杨乙乾',
+    '柴宁',
+    '柴维英',
+    '梁辉',
+    '汪冰',
+    '沈菊平',
+    '王培帅',
+    '王学倩',
+    '王晓宇',
+    '王朝辉',
+    '王赫然',
+    '田强',
+    '田胜伟',
+    '白雪',
+    '翟雨佳',
+    '荆爱青',
+    '谢海燕',
+    '赵守森',
+    '郑卫福',
+    '郭丰郡',
+    '陆凤坚',
+    '陈健民',
+    '陈明',
+    '陈春萍',
+    '陈立尧',
+    '韩雷雷',
+    '顾金鑫',
+    '高倩',
+    '高璐',
+    '鲁平',
+    '黄伟',
+    '黄卓越',
+    '齐鸿儒'
+  ]
+
+  let golds = JSON.parse(localStorage.getItem('golds')) || []
+  golds.forEach(v => {
+    if (arr.includes(v)) {
+      arr.splice(arr.indexOf(v), 1)
+    }
+  })
+
+  changeImg(arr[0])
+
+  function changeImg(tag) {
+    img.src = './gold/img/' + tag + '.jpg'
+    name.innerText = tag
+  }
+
+  btn.onclick = function (ev) {
+    ev.stopPropagation()
+    if (tag) {
+      let len = arr.length
+      if (len <= 0) {
+        return
+      }
+      clearInterval(time)
+      time = setInterval(function () {
+        changeImg(arr[Math.floor(Math.random() * len)])
+      }, speed)
+      btn.innerHTML = '停止'
+      tag = false
+    } else {
+      clearInterval(time)
+      btn.innerHTML = '开始'
+      tag = true
+      arr.splice(arr.indexOf(name.innerText), 1)
+      golds.push(name.innerText)
+      localStorage.setItem('golds', JSON.stringify(golds))
+    }
+  }
+</script>
+</body>
+</html>
+
+
