@@ -16,7 +16,7 @@
         .a{
             color: red;
         }
-			
+
         .a img{
             width: 100px;
             height: 100px;
@@ -24,13 +24,19 @@
         .line{
             margin: 20px 0;
         }
+        .div{
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
 	</style>
 </head>
 <body>
 <div class="a" id="a">
         <p>过一个平凡无趣的人生实在太容易了，你可以不读书，不冒险，不运动，不写作，不外出，不折腾……但是，人生最后悔的事情就是：我本可以。</p>
        <p>ppppppppppppp</p>
-   
+
        <img src="https://img.zcool.cn/community/011a5859ac137ea8012028a92fc78a.jpg@1280w_1l_2o_100sh.jpg">
 
 
@@ -42,6 +48,7 @@
 <p class="line">line</p>
 <a class="down" href="" download="down">下载</a>
 
+<div class="div">@ 2017-2020 bigqianduan.top 版权所有 ICP证：<a href="http://beian.miit.gov.cn">京ICP备18039352号</a></div>
 <script src="https://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
 
 <script src="./test/html2canvas.min.js"></script>
@@ -77,13 +84,13 @@ $(function(){
     /*
         http://html2canvas.hertzen.com/configuration
     */
-    
+
     /*
     let imgWidth = node.offsetWidth // 获取DOM宽度
     let imgHeight = node.offsetHeight // 获取DOM高度
     let scale = 2 // 定义放大倍数
 
-    let canvas = document.createElement("canvas") 
+    let canvas = document.createElement("canvas")
     canvas.width = imgWidth * scale; // 定义canvas 宽度 * 缩放
     canvas.height = imgHeight * scale; // 定义canvas高度 *缩放
     canvas.style.width = imgWidth + "px";

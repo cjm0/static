@@ -87,39 +87,17 @@
   let btn = document.querySelector('.btn')
   let speed = 30
 
-
   // 背景变换
   let step = 0
   let bg = ['30', '31', '20', '21', '10', '11']
-  function go() {
-    if (step > 5) {
-      return
-    }
-    document.querySelector('.bg').style.backgroundImage = 'url(./gold/img/bg/' + bg[step] + '.jpg)'
-    step++
-    if (step % 2 == 0) {
-      cont.style.display = 'block'
-      btn.innerHTML = '开始'
-    } else {
-      cont.style.display = 'none'
-    }
-  }
-
-  window.onload = function() {
-    go()
-  }
-  document.body.onclick = function() {
-    go()
-  }
-
 
   // 抽奖
   let tag = true
   let time = null
   let arr = [
+    '侯玉珊',
     '丁欣',
     '代叶',
-    '侯玉珊',
     '冯振华',
     '周丹兰',
     '唐伯虎',
@@ -170,7 +148,13 @@
     '鲁平',
     '黄伟',
     '黄卓越',
-    '齐鸿儒'
+    '齐鸿儒',
+    '陈胜',
+    '刘微微',
+    '吴永新',
+    '王伟',
+    '夏中宾',
+    '昂哥'
   ]
 
   let golds = JSON.parse(localStorage.getItem('golds')) || []
@@ -179,13 +163,51 @@
       arr.splice(arr.indexOf(v), 1)
     }
   })
+  console.log('此次抽奖参与人:' + arr.length, JSON.stringify(arr, null, 2));
 
-  changeImg(arr[0])
 
+  function go() {
+    if (step > 5) {
+      return
+    }
+    clear()
+    document.querySelector('.bg').style.backgroundImage = 'url(./gold/img/bg/' + bg[step] + '.jpg)'
+    step++
+    if (step % 2 == 0) {
+      cont.style.display = 'block'
+      btn.innerHTML = '开始'
+      changeImg('begin')
+    } else {
+      cont.style.display = 'none'
+    }
+  }
+
+  window.onload = function() {
+    go()
+  }
+  document.body.onclick = function() {
+    go()
+  }
+
+
+  // 抽奖
   function changeImg(tag) {
+    if (tag == 'begin') {
+      img.src = './gold/img/begin.png'
+      name.innerText = ''
+      return
+    }
     img.src = './gold/img/' + tag + '.jpg'
     name.innerText = tag
   }
+
+  function clear() {
+    clearInterval(time)
+    btn.innerHTML = '开始'
+    tag = true
+  }
+
+  changeImg('begin')
 
   btn.onclick = function (ev) {
     ev.stopPropagation()
@@ -201,9 +223,7 @@
       btn.innerHTML = '停止'
       tag = false
     } else {
-      clearInterval(time)
-      btn.innerHTML = '开始'
-      tag = true
+      clear()
       arr.splice(arr.indexOf(name.innerText), 1)
       golds.push(name.innerText)
       localStorage.setItem('golds', JSON.stringify(golds))
